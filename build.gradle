@@ -1,0 +1,108 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: "com.github.hierynomus.license"
+apply plugin: 'org.sonarqube'
+apply plugin: 'maven-publish'
+apply plugin: "com.jfrog.artifactory"
+//apply plugin: 'nebula.lint'
+
+sourceCompatibility = 1.8
+version = "${version}"
+group = 'com.dell.isg.smi'
+targetCompatibility = 1.8
+buildscript {
+   repositories {
+    mavenLocal()
+	maven {
+		url "${artifactory_contextUrl}/libs-release"
+		url "https://plugins.gradle.org/m2/"
+	}
+  }
+  dependencies {
+ 	classpath "io.spring.gradle:dependency-management-plugin:1.0.2.RELEASE"
+    classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.4.15"
+    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2.1"
+    classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.13.1"
+    //classpath 'com.netflix.nebula:gradle-lint-plugin:latest.release'
+  }
+}
+
+//gradleLint {
+  //rules  = ['dependency-parentheses','overridden-dependency-version','duplicate-dependency-class', 'all-dependency','unused-dependency']
+//}
+
+sonarqube {
+    properties {
+        property "sonar.projectName", "SMI :: Utilities :: Commons Utilities"
+        property "sonar.projectKey", "org.sonarqube:commons-utilities"
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'commons-utilities',
+                   'Implementation-Version': version
+    }
+	baseName = 'commons-utilities'
+}
+
+repositories {
+	mavenLocal()
+	maven {
+		url "${artifactory_contextUrl}/libs-release"
+	}
+}
+
+dependencies {
+    compile('com.dell.isg.smi:commons-model:1.0.69')
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+}
+
+test {
+    systemProperties 'property': 'value'
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication){
+            artifact jar
+        }
+    }
+}
+
+license {
+        header rootProject.file('license-template')
+        includes(["**/*.java", "**/*.properties"])
+        strictCheck true
+        ignoreFailures true
+        ext.year = Calendar.getInstance().get(Calendar.YEAR)
+    	ext.name = 'DELL Inc.'
+}
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+    publish {
+        defaults{ publications ("mavenJava")}
+        repository {
+            repoKey = 'libs-release-local'
+	    // note: username and password being set by bamboo artifactory plugin
+            maven = true
+        }
+    }
+    resolve {
+        repository {
+            repoKey = 'libs-release'
+            maven = true
+        }
+    }
+}
+
