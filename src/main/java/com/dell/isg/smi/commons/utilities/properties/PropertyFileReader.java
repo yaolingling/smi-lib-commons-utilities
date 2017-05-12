@@ -12,8 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Michael_Regert
+ * The Class PropertyFileReader.
  *
+ * @author Michael_Regert
  */
 public class PropertyFileReader {
     private static final Logger logger = LoggerFactory.getLogger(PropertyFileReader.class.getName());
@@ -23,8 +24,19 @@ public class PropertyFileReader {
     private static PropertyFileReader instance = null;
 
 
-    /*-----------------------------------------------------------------------*/
+    /**
+     * Instantiates a new property file reader.
+     */
+    protected PropertyFileReader() {
+        // Exists only to prevent instantiation of this class
+    }
 
+    
+    /**
+     * Gets the single instance of PropertyFileReader.
+     *
+     * @return single instance of PropertyFileReader
+     */
     public static PropertyFileReader getInstance() {
         if (instance == null) {
             instance = new PropertyFileReader();
@@ -32,9 +44,13 @@ public class PropertyFileReader {
         return instance;
     }
 
-
-    /*-----------------------------------------------------------------------*/
-
+    
+    /**
+     * Gets the properties.
+     *
+     * @return the properties
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public Properties getProperties() throws IOException {
         try {
             getProperties(false);
@@ -45,10 +61,15 @@ public class PropertyFileReader {
     }
 
 
-    /*-----------------------------------------------------------------------*/
-
+    /**
+     * Gets the properties.
+     *
+     * @param refresh the refresh
+     * @return the properties
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public Properties getProperties(boolean refresh) throws IOException {
-        if (properties != null && refresh == false) {
+        if (properties != null && !refresh) {
             return properties;
         }
 
@@ -76,8 +97,11 @@ public class PropertyFileReader {
     }
 
 
-    /*-----------------------------------------------------------------------*/
-
+    /**
+     * Gets the script name with path.
+     *
+     * @return the script name with path
+     */
     public static String getScriptNameWithPath() {
         String scriptName = "";
         try {
@@ -86,19 +110,12 @@ public class PropertyFileReader {
             String scriptDirectory = properties.getProperty("script_directory");
 
             if (scriptDirectory.charAt(scriptDirectory.length() - 1) != '/') {
-                scriptDirectory += '/';
+                scriptDirectory += Character.toString('/');
             }
             scriptName = scriptDirectory + properties.getProperty("script_name");
         } catch (Exception e) {
-            logger.error(e.toString());
+            logger.error(e.toString(), e);
         }
         return scriptName;
-    }
-
-
-    /*-----------------------------------------------------------------------*/
-
-    protected PropertyFileReader() {
-        // Exists only to prevent instantiation of this class
     }
 }
