@@ -5,9 +5,9 @@ package com.dell.isg.smi.commons.utilities;
 
 import java.util.List;
 
-import com.dell.isg.smi.utilities.model.PagedResult;
-import com.dell.isg.smi.utilities.model.Pages;
-import com.dell.isg.smi.utilities.model.Pagination;
+import com.dell.isg.smi.commons.utilities.model.PagedResult;
+import com.dell.isg.smi.commons.utilities.model.Pages;
+import com.dell.isg.smi.commons.utilities.model.Pagination;
 
 /**
  * @author jian.yang

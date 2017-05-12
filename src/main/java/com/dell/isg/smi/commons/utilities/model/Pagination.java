@@ -8,7 +8,7 @@
 // Generated on: 2016.03.04 at 01:18:28 PM CST
 //
 
-package com.dell.isg.smi.utilities.model;
+package com.dell.isg.smi.commons.utilities.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
