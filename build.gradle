@@ -121,9 +121,9 @@ uploadArchives {
 				}
 				
 				scm {
-				  connection 'scm:git:git://www.github.com/rackhd/smi-lib-commons-model.git'
-				  developerConnection 'scm:git:ssh://www.github.com/rackhd/smi-lib-commons-model.git'
-				  url 'http://www.github.com/rackhd/smi-lib-commons-model'
+				  connection 'scm:git:git://www.github.com/rackhd/smi-lib-commons-utilities.git'
+				  developerConnection 'scm:git:ssh://www.github.com/rackhd/smi-lib-commons-utilities.git'
+				  url 'http://www.github.com/rackhd/smi-lib-commons-utilities'
 				}
 				
 				developers {
