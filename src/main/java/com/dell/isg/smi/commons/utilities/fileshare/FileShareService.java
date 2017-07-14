@@ -1,5 +1,5 @@
 /**
- * Copyright © 2017 DELL Inc. or its subsidiaries.  All Rights Reserved.
+ * Copyright ï¿½ 2017 DELL Inc. or its subsidiaries.  All Rights Reserved.
  */
 package com.dell.isg.smi.commons.utilities.fileshare;
 
@@ -185,8 +185,7 @@ public class FileShareService {
                 }
 
                 CommandResponse commandResponse;
-                try {
-                    logger.debug("Command is " + cmd.toString());
+                try {                    
                     commandResponse = IssueCommands.issueSystemCommand(cmd.toArray(new String[cmd.size()]));
                     if (Integer.parseInt(commandResponse.getReturnCode()) != 0) {
                         logger.error("Failed to mount {} share: {}", fileShare.getType().toString(), fileShare.getName());
@@ -220,30 +219,34 @@ public class FileShareService {
      * @param name the name
      * @return the boolean
      */
-    public Boolean unmount(String name) {
-        logger.debug("Inside of " + FileShareService.class.getName() + "mount()");
-
-        CommandResponse commandResponse = null;
-        String scriptName = PropertyFileReader.getScriptNameWithPath();
-
-        List<String> cmd = new ArrayList<>();
-        cmd.add("sudo");
-        cmd.add(scriptName);
-        cmd.add("--name");
-        cmd.add(name);
-
-        try {
-            commandResponse = IssueCommands.issueSystemCommand(cmd.toArray(new String[0]));
-
-        } catch (Exception e) {
-            logger.error("Failed to un-mount {} share: {}", name, e);
-            return false;
-        }
-
-        // log the return message
-        if (null != commandResponse) {
-            logger.trace(commandResponse.getReturnMessage());
-        }
-        return true;
+    public Boolean unmount(FileShare fileShare) {
+    	logger.debug("Inside of " + FileShareService.class.getName() + "umount()");
+    	
+    	if (null != fileShare) {
+    		String scriptName = fileShare.getScriptName();
+    		String scriptDirectory = fileShare.getScriptDirectory();
+    		if (StringUtils.isNotBlank(scriptName) && StringUtils.isNotBlank(scriptDirectory)) {
+    			if (scriptDirectory.charAt(scriptDirectory.length() - 1) != '/') {
+                    scriptDirectory += Character.toString('/');
+                }
+    			String script = scriptDirectory + scriptName;
+                List<String> cmd = new ArrayList<>();
+                cmd.add(script);
+                cmd.add("--unmount");
+                cmd.add(fileShare.getName());
+                
+                CommandResponse commandResponse;
+                try {
+                	commandResponse = IssueCommands.issueSystemCommand(cmd.toArray(new String[0]));
+                } catch (Exception e) {
+                	logger.error("Failed to un-mount {} share: {}", fileShare.getName(), e);
+                	return false;
+                }   			
+    		}
+    	} else {
+    		logger.info("Unable to mount because Null Fileshare details");
+    		return false;
+    	}
+    	return true;
     }
 }
