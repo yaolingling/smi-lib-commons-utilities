@@ -216,7 +216,7 @@ public class FileShareService {
     /**
      * Unmount.
      *
-     * @param FileShare the fileShare object
+     * @param fileShare the fileShare object
      * @return the boolean
      */
     public Boolean unmount(FileShare fileShare) {
